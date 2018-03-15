@@ -38,11 +38,20 @@ public class RecipeBootstrap implements ApplicationListener<ContextRefreshedEven
     public void onApplicationEvent(ContextRefreshedEvent event) {
         loadCategories();
         loadUom();
+        if (recipeRepository.findByDescription("Perfect Guacamole").isPresent()) {
+            log.debug("Recipes already loaded...");
+            log.debug("Bootstrap data loaded successfully...");
+            return;
+        }
         recipeRepository.saveAll(getRecipes());
         log.debug("Loading Bootstrap Data");
     }
 
     private void loadCategories(){
+        if (categoryRepository.findByDescription("American").isPresent()) {
+            log.debug("Categories already loaded...");
+            return;
+        }
         Category cat1 = new Category();
         cat1.setDescription("American");
         categoryRepository.save(cat1);
@@ -61,6 +70,10 @@ public class RecipeBootstrap implements ApplicationListener<ContextRefreshedEven
     }
 
     private void loadUom(){
+        if (unitOfMeasureRepository.findByDescription("Teaspoon").isPresent()) {
+            log.debug("UnitOfMeasures already loaded...");
+            return;
+        }
         UnitOfMeasure uom1 = new UnitOfMeasure();
         uom1.setDescription("Teaspoon");
         unitOfMeasureRepository.save(uom1);
